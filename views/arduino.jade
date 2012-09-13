@@ -1,0 +1,57 @@
+extends layout
+
+block content
+	p Click on one of these links to switch a led on or off
+	p the current status of the arduino led on pin 13 is: 
+		span#w_status
+	ul
+		li
+			a(href='javascript:socket.emit("led", {rgb: {w: "ff"}});') Led ON
+		li
+			a(href='javascript:socket.emit("led", {rgb: {w: "00"}});') Led OFF
+	
+	p There is also a RGB led enlightened to
+	
+	|#
+	span#rgb_status
+	|  R(
+	span#r_status
+	) 
+	|  G(
+	span#g_status 
+	)
+	|  B(
+	span#b_status 
+	)
+	
+	p
+		Enter a color hex here to change it: <br>
+		form(id='rgb_form', name='rgb_form')
+			input(name='rgb')
+			input(type='submit')
+	
+	
+block script
+	script(src=socketio.lib_src)
+	script
+		var socket = io.connect(location.host+':'+#{socketio.port});
+		var rgb_form = document.getElementById('rgb_form');
+		var status_containers = {
+			w: document.getElementById('w_status'),
+			r: document.getElementById('r_status'),
+			g: document.getElementById('g_status'),
+			b: document.getElementById('b_status'),
+			hex: document.getElementById('rgb_status')
+		};
+		
+		document.rgb_form.onsubmit = function(){
+			socket.emit("led", {hex:this.rgb.value});
+			return false;
+		};
+		
+		socket.on('led', function (data) {
+			for (led in data.rgb){
+				status_containers[led].innerHTML = data.rgb[led];
+			}
+			if('undefined' != typeof(data.hex)) { status_containers.hex.innerHTML = data.hex; }
+		});

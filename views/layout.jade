@@ -1,0 +1,16 @@
+!!! 5
+html
+	head
+		title= htitle
+		block style
+			link('http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/css/bootstrap-combined.min.css')
+	body
+		block header
+			include inc/header
+		block nav	
+			include inc/nav
+		block content
+			p This is some static content just for let you reading something...
+		include inc/footer
+		block script
+			script(src='http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/js/bootstrap.min.js')
